@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 import feicui.mygitdroid.R;
+import feicui.mygitdroid.splash.pager.Pager2;
 import me.relex.circleindicator.CircleIndicator;
 
 /**
@@ -41,11 +44,16 @@ public class SplashPagerFragment extends Fragment {
     @BindColor(R.color.colorRed) int colorRed;
     @BindColor(R.color.colorYellow) int colorYellow;
     @BindColor(R.color.colorGreen) int colorGreen;
+    int w,h;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_splash_pager, container, false);
         ButterKnife.bind(this, view);
+        DisplayMetrics dm=getResources().getDisplayMetrics();
+        w=dm.widthPixels;
+        h=dm.densityDpi;
+        Log.i("msg",""+w+"高"+h);
         return view;
     }
 
@@ -112,7 +120,11 @@ public class SplashPagerFragment extends Fragment {
 
         @Override
         public void onPageSelected(int position) {
-
+            // 当显示出最后一个pager时，播放它自己的动画
+            if(position == 2) {
+                Pager2 pager2View = (Pager2) adapter.getView(position);
+                pager2View.showAnimation();
+            }
         }
 
         @Override

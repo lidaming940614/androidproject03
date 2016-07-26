@@ -15,7 +15,6 @@ import feicui.mygitdroid.R;
  */
 public class Pager0 extends FrameLayout {
 
-
     public Pager0(Context context) {
         super(context);
         init();
