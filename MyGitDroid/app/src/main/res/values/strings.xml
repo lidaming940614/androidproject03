@@ -2,7 +2,8 @@
     <string name="app_name">MyGitDroid</string>
     <string name="login_github">登录GitHub</string>
     <string name="enter_app">直接使用</string>
-
+<string name="open_drawer">打开</string>
+    <string name="close_drawer">关闭</string>
     <string name="welcome_to_gitdroid">Welcome to GitDroid</string>
     <string name="welcome_introduction">全平台管理你的GitHub账号，时刻跟踪最热门的开源库</string>
 

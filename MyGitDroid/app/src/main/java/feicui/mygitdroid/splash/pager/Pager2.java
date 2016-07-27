@@ -59,5 +59,10 @@ public class Pager2 extends FrameLayout {
             }, 1050);
         }
     }
+    public  void hideAnimation(){
+        ivBubble1.setVisibility(View.GONE);
+        ivBubble2.setVisibility(View.GONE);
+        ivBubble3.setVisibility(View.GONE);
+    }
 
 }

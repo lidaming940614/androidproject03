@@ -41,19 +41,24 @@ public class SplashPagerFragment extends Fragment {
     @Bind(R.id.layoutPhone)
     FrameLayout layoutPhone;
     private SplashPagerAdapter adapter;
-    @BindColor(R.color.colorRed) int colorRed;
-    @BindColor(R.color.colorYellow) int colorYellow;
-    @BindColor(R.color.colorGreen) int colorGreen;
-    int w,h;
+    @BindColor(R.color.colorRed)
+    int colorRed;
+    @BindColor(R.color.colorYellow)
+    int colorYellow;
+    @BindColor(R.color.colorGreen)
+    int colorGreen;
+    Pager2 pager2;
+    int w, h;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_splash_pager, container, false);
         ButterKnife.bind(this, view);
-        DisplayMetrics dm=getResources().getDisplayMetrics();
-        w=dm.widthPixels;
-        h=dm.densityDpi;
-        Log.i("msg",""+w+"高"+h);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        w = dm.widthPixels;
+        h = dm.densityDpi;
+        Log.i("msg", "" + w + "高" + h);
         return view;
     }
 
@@ -73,16 +78,17 @@ public class SplashPagerFragment extends Fragment {
 
     // 主要为了做背景颜色渐变处理
     private ViewPager.OnPageChangeListener pageColorListener = new ViewPager.OnPageChangeListener() {
-        final ArgbEvaluator argbEvaluator=new ArgbEvaluator();
+        final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (position==0){
-            int color= (int) argbEvaluator.evaluate(positionOffset,colorGreen,colorRed);
-            content.setBackgroundColor(color);
-            return;
-        }
-            if (position==1){
-                int color= (int) argbEvaluator.evaluate(positionOffset,colorRed,colorYellow);
+            if (position == 0) {
+                int color = (int) argbEvaluator.evaluate(positionOffset, colorGreen, colorRed);
+                content.setBackgroundColor(color);
+                return;
+            }
+            if (position == 1) {
+                int color = (int) argbEvaluator.evaluate(positionOffset, colorRed, colorYellow);
                 content.setBackgroundColor(color);
             }
 
@@ -103,17 +109,17 @@ public class SplashPagerFragment extends Fragment {
     private ViewPager.OnPageChangeListener phoneViewListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-         if (position==0){//第一个页面到第二个页面的手机放缩
-             float scale=0.3f+positionOffset*0.7f;
-             layoutPhone.setScaleX(scale);
-             layoutPhone.setScaleY(scale);
+            if (position == 0) {//第一个页面到第二个页面的手机放缩
+                float scale = 0.3f + positionOffset * 0.7f;
+                layoutPhone.setScaleX(scale);
+                layoutPhone.setScaleY(scale);
 
-             int scroll = (int) ((positionOffset-1)*300);
-             layoutPhone.setTranslationX(scroll);
-          ivPhoneFont.setAlpha(positionOffset);
-             return;
-         }
-            if (position==1){
+                int scroll = (int) ((positionOffset - 1) * 300);
+                layoutPhone.setTranslationX(scroll);
+                ivPhoneFont.setAlpha(positionOffset);
+                return;
+            }
+            if (position == 1) {
                 layoutPhone.setTranslationX(-positionOffsetPixels);
             }
         }
@@ -121,7 +127,7 @@ public class SplashPagerFragment extends Fragment {
         @Override
         public void onPageSelected(int position) {
             // 当显示出最后一个pager时，播放它自己的动画
-            if(position == 2) {
+            if (position == 2) {
                 Pager2 pager2View = (Pager2) adapter.getView(position);
                 pager2View.showAnimation();
             }
