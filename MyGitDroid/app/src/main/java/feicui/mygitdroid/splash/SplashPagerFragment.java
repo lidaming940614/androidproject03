@@ -113,7 +113,7 @@ public class SplashPagerFragment extends Fragment {
                 float scale = 0.3f + positionOffset * 0.7f;
                 layoutPhone.setScaleX(scale);
                 layoutPhone.setScaleY(scale);
-
+                //手机的平移
                 int scroll = (int) ((positionOffset - 1) * 300);
                 layoutPhone.setTranslationX(scroll);
                 ivPhoneFont.setAlpha(positionOffset);
@@ -130,9 +130,11 @@ public class SplashPagerFragment extends Fragment {
             if (position == 2) {
                 Pager2 pager2View = (Pager2) adapter.getView(position);
                 pager2View.showAnimation();
+            }else  if (position==1){
+                Pager2 pager2= (Pager2) adapter.getView(2);
+                pager2.hideAnimation();
             }
         }
-
         @Override
         public void onPageScrollStateChanged(int state) {
 
