@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import feicui.mygitdroid.R;
 import feicui.mygitdroid.fragment.Fragment_hot_repo;
+import feicui.mygitdroid.login.LoginActivity;
 
 /**
  * Created by 1099057173 on 2016/7/26.
@@ -35,10 +36,14 @@ public class SplashActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnLogin:
+                Intent intent2=new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent2);
+                finish();
                 break;
             case R.id.btnEnter:
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
                 break;
         }
     }

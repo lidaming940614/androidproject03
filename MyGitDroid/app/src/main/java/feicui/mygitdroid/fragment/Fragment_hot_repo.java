@@ -28,20 +28,23 @@ public class Fragment_hot_repo extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_hot_repo, container,false);
+        view = inflater.inflate(R.layout.fragment_hot_repo, container, false);
         return view;
     }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         getview();
         setview();
     }
+
     @Override
     public void getview() {
-        ad = new HotRepoAdapter(getChildFragmentManager());
+        ad = new HotRepoAdapter(getChildFragmentManager(),getContext());
     }
+
     @Override
     public void setview() {
         viewPager.setAdapter(ad);

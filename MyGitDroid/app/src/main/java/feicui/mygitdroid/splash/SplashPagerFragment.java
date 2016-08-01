@@ -105,7 +105,6 @@ public class SplashPagerFragment extends Fragment {
         }
     };
 
-    // 主要为了做"手机"的动画效果处理(平移、缩放、透明度变化)
     private ViewPager.OnPageChangeListener phoneViewListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

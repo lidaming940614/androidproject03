@@ -10,12 +10,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import feicui.mygitdroid.R;
+import feicui.mygitdroid.commons.ActivityUtils;
 import feicui.mygitdroid.fragment.Fragment_hot_repo;
+import feicui.mygitdroid.login.LoginActivity;
+import feicui.mygitdroid.login.UserRepo;
 
 public class MainActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
@@ -25,12 +33,15 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.drawerLayout)
     DrawerLayout drawerLayout;
     private Fragment_hot_repo fragment_hot_repo;
-
+    private Button btnLogin;
+    private ImageView ivIcon;
+    private ActivityUtils activityUtils;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        activityUtils = new ActivityUtils(this);
         navigationView.setNavigationItemSelectedListener(listener);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -39,6 +50,26 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
         fragment_hot_repo = new Fragment_hot_repo();
         replaceFragment(fragment_hot_repo);
+
+        btnLogin = ButterKnife.findById(navigationView.getHeaderView(0), R.id.btnLogin);
+        ivIcon = ButterKnife.findById(navigationView.getHeaderView(0), R.id.ivIcon);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                activityUtils.startActivity(LoginActivity.class);
+                finish();
+            }
+        });
+    }
+    @Override protected void onStart() {
+        super.onStart();
+        if (UserRepo.isEmpty()) {
+            btnLogin.setText(R.string.login_github);
+            return;
+        }
+        btnLogin.setText(R.string.switch_account);
+        getSupportActionBar().setTitle(UserRepo.getUser().getName());
+        String photoUrl = UserRepo.getUser().getAvatar();
+        ImageLoader.getInstance().displayImage(photoUrl, ivIcon);
     }
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();

@@ -2,11 +2,17 @@ package feicui.mygitdroid.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.mugen.Mugen;
+import com.mugen.MugenCallbacks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +20,15 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import feicui.mygitdroid.R;
+import feicui.mygitdroid.adapter.Language;
 import feicui.mygitdroid.adapter.ListviewAdapter;
+import feicui.mygitdroid.adapter.RepoListAdapter;
+import feicui.mygitdroid.commons.ActivityUtils;
 import feicui.mygitdroid.db.BaseFragment;
+import feicui.mygitdroid.entity.Repo;
+import feicui.mygitdroid.view.FooterView;
+import feicui.mygitdroid.view.RepoListPresenter;
+import feicui.mygitdroid.view.RepoListView;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -25,11 +38,11 @@ import in.srain.cube.views.ptr.header.StoreHouseHeader;
 /**
  * Created by 1099057173 on 2016/7/27.
  */
-public class RepoListFragment extends BaseFragment {
+public class RepoListFragment extends Fragment implements RepoListView {
     View view;
     @Bind(R.id.lvRepos)
     ListView lvRepos;
-    ListviewAdapter ad;
+    //    ListviewAdapter ad;
     List<String> list;
     @Bind(R.id.ptrClassicFrameLayout)
     PtrClassicFrameLayout ptrClassicFrameLayout;
@@ -37,43 +50,73 @@ public class RepoListFragment extends BaseFragment {
     TextView emptyView;
     @Bind(R.id.errorView)
     TextView errorView;
+//    private RepoListPresenter presenter;
+//    private ArrayAdapter<String> adapter;
+//    private FooterView footerView;
+
+    private static final String KEY_LANGUAGE = "key_language";
+
+    public static RepoListFragment getInstance(Language language){
+        RepoListFragment fragment = new RepoListFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(KEY_LANGUAGE,language);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private Language getLanguage() {
+        return (Language)getArguments().getSerializable(KEY_LANGUAGE);
+    }
+
+
+
+    private RepoListAdapter adapter;
+
     // 用来做当前页面业务逻辑及视图更新的
     private RepoListPresenter presenter;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_repo_list, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    private FooterView footerView; // 上拉加载更多的视图
+    private ActivityUtils activityUtils;
+
+    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_repo_list, container, false);
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        getview();
-        setview();
+        activityUtils = new ActivityUtils(this);
+        presenter = new RepoListPresenter(this, getLanguage());
+
+        adapter = new RepoListAdapter();
+        lvRepos.setAdapter(adapter);
+        // 初始下拉刷新
+        initPullToRefresh();
+        // 初始上拉加载更多
+        initLoadMoreScroll();
     }
 
-    @Override
-    public void getview() {
-        list = new ArrayList<String>();
-        for (int i = 0; i < 9; i++) {
-            list.add("doubi" + i);
-        }
-        ad = new ListviewAdapter(list);
-    }
+    private void initLoadMoreScroll() {
+        footerView = new FooterView(getContext());
+        Mugen.with(lvRepos, new MugenCallbacks() {
+            // listview，滚动到底部,将触发此方法
+            @Override public void onLoadMore() {
+                // 执行上拉加载数据的业务处理
+                presenter.loadMore();
+            }
 
-    @Override
-    public void setview() {
-        lvRepos.setAdapter(ad);
-    }
+            // 是否正在加载中
+            // 其内部将用此方法来判断是否触发onLoadMore
+            @Override public boolean isLoading() {
+                return lvRepos.getFooterViewsCount() > 0 && footerView.isLoading();
+            }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+            // 是否已加载完成所有数据
+            // 其内部将用此方法来判断是否触发onLoadMore
+            @Override public boolean hasLoadedAllItems() {
+                return lvRepos.getFooterViewsCount() > 0 && footerView.isComplete();
+            }
+        }).start();
     }
 
     private void initPullToRefresh() {
@@ -84,8 +127,7 @@ public class RepoListFragment extends BaseFragment {
         // 下拉刷新监听处理
         ptrClassicFrameLayout.setPtrHandler(new PtrDefaultHandler() {
             // 当你"下拉时",将触发此方法
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
+            @Override public void onRefreshBegin(PtrFrameLayout frame) {
                 // 去做数据的加载，做具体的业务
                 // 也就是说，你要抛开视图，到后台线程去做你的业务处理(数据刷新加载)
                 presenter.refresh();
@@ -101,46 +143,64 @@ public class RepoListFragment extends BaseFragment {
         ptrClassicFrameLayout.setBackgroundResource(R.color.colorRefresh);
     }
 
-    // 刷新的方法
-    // 视图上:
-    // 显示内容 or 错误 or 空白 , 三选一
+    // 下拉刷新视图实现----------------------------------------
+    @Override
     public void showContentView() {
         ptrClassicFrameLayout.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
         errorView.setVisibility(View.GONE);
     }
 
+    @Override
     public void showErrorView(String errorMsg) {
         ptrClassicFrameLayout.setVisibility(View.GONE);
         emptyView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public void showEmptyView() {
         ptrClassicFrameLayout.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
         errorView.setVisibility(View.GONE);
     }
 
-    //
-    // 显示提示信息
-    // 如：Toast， 直接在当前页面上页面
+    @Override
     public void showMessage(String msg) {
-
+        activityUtils.showToast(msg);
     }
 
-    //
+    @Override
     public void stopRefresh() {
         ptrClassicFrameLayout.refreshComplete();
     }
 
-    //
-    // 刷新数据
-    // 将后台线程更新加载到的数据，刷新显示到视图(listview)上来显示给用户看
-    public void refreshData(List<String> data) {
-//        ad.clear();
-//        ad.addAll(data);
-//        ad.notifyDataSetChanged();
+    @Override
+    public void refreshData(List<Repo> datas) {
+        adapter.clear();
+        adapter.addAll(datas);
     }
 
+    // 上拉加载更多视图实现----------------------------------------
+    @Override public void showLoadMoreLoading() {
+        if (lvRepos.getFooterViewsCount() == 0) {
+            lvRepos.addFooterView(footerView);
+        }
+        footerView.showLoading();
+    }
+
+    @Override public void hideLoadMore() {
+        lvRepos.removeFooterView(footerView);
+    }
+
+    @Override public void showLoadMoreErro(String erroMsg) {
+        if (lvRepos.getFooterViewsCount() == 0) {
+            lvRepos.addFooterView(footerView);
+        }
+        footerView.showError(erroMsg);
+    }
+
+    @Override public void addMoreData(List<Repo> datas) {
+        adapter.addAll(datas);
+    }
 }
