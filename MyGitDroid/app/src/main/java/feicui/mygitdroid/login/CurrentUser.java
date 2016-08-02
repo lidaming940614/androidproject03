@@ -7,7 +7,6 @@ public class CurrentUser {
     private CurrentUser(){}
 
     private static String accessToken;
-
     private static User user;
 
     // 当前是否有token

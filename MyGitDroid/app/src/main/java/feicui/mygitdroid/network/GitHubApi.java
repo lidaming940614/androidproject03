@@ -1,24 +1,29 @@
 package feicui.mygitdroid.network;
 
 import feicui.mygitdroid.entity.RepoResult;
+import feicui.mygitdroid.hotUser.UserResult;
 import feicui.mygitdroid.login.AccessTokenResult;
 import feicui.mygitdroid.login.User;
+import feicui.mygitdroid.repoinfo.RepoContentResult;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
  * Created by 1099057173 on 2016/7/28.
  */
 public interface GitHubApi {
-    String CALL_BACK = "https://1099057173@qq.com";
-    String CLIENT_ID = "bcc2daa9cfd8dae70095";
-    String CLIENT_SECRET = "9e7759411abde8e80cbf9295d5637e2dfecff77f";
+    String CALL_BACK = "lidaming";
+    String CLIENT_ID = "9625ad4e530bdda2dc88";
+    String CLIENT_SECRET = "0b9cc81f748995367577c7681b4c274efde828f2";
 
     String AUTH_SCOPE = "user,public_repo,repo";
     // 授权登陆页面(用WebView来加载)
@@ -44,4 +49,21 @@ public interface GitHubApi {
     Call<RepoResult> searchRepos(
             @Query("q")String query,
             @Query("page")int pageId);
+
+    @GET("/repos/{owner}/{repo}/readme")
+    Call<RepoContentResult> getReadme(
+            @Path("owner") String owner,
+            @Path("repo") String repo);
+
+    @Headers({
+            "Content-Type:text/plain"
+    })
+    @POST("/markdown/raw")
+    Call<ResponseBody> markDown(@Body RequestBody body);
+
+
+
+
+    @GET("/search/users")
+    Call<UserResult>  searchuUser(@Query("q")String query, @Query("page")int pageId);
 }

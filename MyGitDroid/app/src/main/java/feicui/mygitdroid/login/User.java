@@ -2,15 +2,22 @@ package feicui.mygitdroid.login;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by 1099057173 on 2016/7/31.
  */
-public class User {
+public class User implements Serializable{
     private String login;
     private String name;
     private int id;
     @SerializedName("avatar_url")
     private String avatar;
+    private  String score;
+
+    public String getScore() {
+        return score;
+    }
 
     public String getLogin() {
         return login;

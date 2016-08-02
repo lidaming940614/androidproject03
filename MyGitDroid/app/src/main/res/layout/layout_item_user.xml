@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/dp_10">
+    <ImageView
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:scaleType="centerCrop"
+        android:id="@+id/ivIcon1"
+        android:src="@drawable/ic_avatar"
+        android:layout_above="@+id/imageView1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <LinearLayout
+        android:id="@+id/layoutTexts1"
+        android:layout_toRightOf="@+id/ivIcon1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginRight="@dimen/dp_10">
+        <TextView
+            android:id="@+id/tvRepoName1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/tvRepoInfo1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            />
+        <TextView
+            android:id="@+id/tvRepoStars1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorBlue"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_below="@+id/layoutTexts1"
+        android:layout_alignRight="@+id/layoutTexts"
+        android:layout_alignLeft="@+id/layoutTexts"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:src="@color/colorRefresh"
+        android:id="@+id/imageView1" />
+</RelativeLayout>

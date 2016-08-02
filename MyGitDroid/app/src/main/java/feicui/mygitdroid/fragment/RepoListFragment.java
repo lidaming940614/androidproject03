@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import feicui.mygitdroid.adapter.RepoListAdapter;
 import feicui.mygitdroid.commons.ActivityUtils;
 import feicui.mygitdroid.db.BaseFragment;
 import feicui.mygitdroid.entity.Repo;
+import feicui.mygitdroid.repoinfo.RepoInfoActivity;
 import feicui.mygitdroid.view.FooterView;
 import feicui.mygitdroid.view.RepoListPresenter;
 import feicui.mygitdroid.view.RepoListView;
@@ -68,8 +70,6 @@ public class RepoListFragment extends Fragment implements RepoListView {
         return (Language)getArguments().getSerializable(KEY_LANGUAGE);
     }
 
-
-
     private RepoListAdapter adapter;
 
     // 用来做当前页面业务逻辑及视图更新的
@@ -79,6 +79,7 @@ public class RepoListFragment extends Fragment implements RepoListView {
     private ActivityUtils activityUtils;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view=inflater.inflate(R.layout.fragment_hot_repo,container,false);
         return inflater.inflate(R.layout.fragment_repo_list, container, false);
     }
 
@@ -90,6 +91,12 @@ public class RepoListFragment extends Fragment implements RepoListView {
 
         adapter = new RepoListAdapter();
         lvRepos.setAdapter(adapter);
+        lvRepos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Repo repo = adapter.getItem(position);
+                RepoInfoActivity.open(getContext(),repo);
+            }
+        });
         // 初始下拉刷新
         initPullToRefresh();
         // 初始上拉加载更多

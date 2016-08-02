@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 import feicui.mygitdroid.R;
 import feicui.mygitdroid.commons.ActivityUtils;
 import feicui.mygitdroid.fragment.Fragment_hot_repo;
+import feicui.mygitdroid.hotUser.HotUserFragment;
 import feicui.mygitdroid.login.LoginActivity;
 import feicui.mygitdroid.login.UserRepo;
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.drawerLayout)
     DrawerLayout drawerLayout;
     private Fragment_hot_repo fragment_hot_repo;
+    private HotUserFragment hotUserFragment;
     private Button btnLogin;
     private ImageView ivIcon;
     private ActivityUtils activityUtils;
@@ -82,7 +84,20 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.github_hot_repo:
-                    Toast.makeText(MainActivity.this, "1-1", Toast.LENGTH_SHORT).show();
+                  if (fragment_hot_repo==null){
+                      fragment_hot_repo=new Fragment_hot_repo();
+                      if (!fragment_hot_repo.isAdded()){
+                          replaceFragment(fragment_hot_repo);
+                      }
+                  }
+                    break;
+                case  R.id.github_hot_coder:
+                    if (hotUserFragment==null){
+                        hotUserFragment=new HotUserFragment();
+                        if (!hotUserFragment.isAdded()){
+                            replaceFragment(hotUserFragment);
+                        }
+                    }
                     break;
             }
             return true;

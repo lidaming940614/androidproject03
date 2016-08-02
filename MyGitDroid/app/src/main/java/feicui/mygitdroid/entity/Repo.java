@@ -2,12 +2,14 @@ package feicui.mygitdroid.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import feicui.mygitdroid.login.User;
 
 /**
  * Created by 1099057173 on 2016/8/1.
  */
-public class Repo {
+public class Repo implements Serializable{
     private int id;
     // 仓库名称
     private String name;

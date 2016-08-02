@@ -69,23 +69,22 @@ public class RepoListAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(repo.getOwner().getAvatar(), viewHolder.ivIcon);
         return convertView;
     }
+}
 
+class ViewHolder {
+    @Bind(R.id.ivIcon)
+    ImageView ivIcon;
+    @Bind(R.id.tvRepoName)
+    TextView tvRepoName;
+    @Bind(R.id.tvRepoInfo)
+    TextView tvRepoInfo;
+    @Bind(R.id.tvRepoStars)
+    TextView tvRepoStars;
+    @Bind(R.id.layoutTexts)
+    LinearLayout layoutTexts;
+
+    ViewHolder(View view) {
+        ButterKnife.bind(this, view);
     }
-
-    class ViewHolder {
-        @Bind(R.id.ivIcon)
-        ImageView ivIcon;
-        @Bind(R.id.tvRepoName)
-        TextView tvRepoName;
-        @Bind(R.id.tvRepoInfo)
-        TextView tvRepoInfo;
-        @Bind(R.id.tvRepoStars)
-        TextView tvRepoStars;
-        @Bind(R.id.layoutTexts)
-        LinearLayout layoutTexts;
-
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
+}
 
