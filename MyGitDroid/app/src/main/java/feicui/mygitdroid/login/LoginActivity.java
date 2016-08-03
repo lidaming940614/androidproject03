@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -67,11 +68,11 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     };
 
     private WebViewClient webViewClient = new WebViewClient() {
-        // 每当webview"刷新"时,此方法将触发 (密码输错了时！输对了时！等等情况web页面都会刷新变化的)
         @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri uri = Uri.parse(url);
             if (GitHubApi.CALL_BACK.equals(uri.getScheme())) {
                 String code = uri.getQueryParameter("code");
+                Log.i("msg2","走1");
                 presenter.login(code);
                 return true;
             }
@@ -93,8 +94,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
 
     @Override public void navigateToMain() {
 //        activityUtils.startActivity(MainActivity.class);
-        Intent intent=new Intent(LoginActivity.this,LoginActivity.class);
+        Intent intent=new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
+        Log.i("msg2","走2");
         finish();
     }
 }

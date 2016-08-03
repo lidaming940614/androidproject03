@@ -6,7 +6,9 @@ import java.io.Serializable;
  * Created by 1099057173 on 2016/7/31.
  */
 public class UserRepo  implements Serializable {
-    private UserRepo(){}
+    private UserRepo(){
+
+    }
 
     private static String accessToken;
 

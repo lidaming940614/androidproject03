@@ -1,4 +1,4 @@
-package feicui.mygitdroid.db;
+package feicui.mygitdroid.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

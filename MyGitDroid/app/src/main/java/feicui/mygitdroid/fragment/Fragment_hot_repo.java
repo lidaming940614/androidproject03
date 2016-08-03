@@ -12,7 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import feicui.mygitdroid.R;
 import feicui.mygitdroid.adapter.HotRepoAdapter;
-import feicui.mygitdroid.db.BaseFragment;
+import feicui.mygitdroid.base.BaseFragment;
 
 /**
  * Created by 1099057173 on 2016/7/27.

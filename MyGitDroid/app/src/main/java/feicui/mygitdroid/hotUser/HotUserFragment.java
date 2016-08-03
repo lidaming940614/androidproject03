@@ -57,30 +57,41 @@ public class HotUserFragment extends Fragment implements UserListView {
         ButterKnife.bind(this, view);
         activityUtils = new ActivityUtils(this);
         presenter = new UserListPresenter(this);
-        ad=new UserAdapter();
+        ad = new UserAdapter();
         userlistview.setAdapter(ad);
         initPullToRefresh();
         initLoadMoreScroll();
+        if (ad.getCount() == 0) {
+            FrameLayout2.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    FrameLayout2.autoRefresh();
+                }
+            }, 300);
+        }
     }
 
     private void initLoadMoreScroll() {
         footerView = new FooterView(getContext());
         Mugen.with(userlistview, new MugenCallbacks() {
             // listview，滚动到底部,将触发此方法
-            @Override public void onLoadMore() {
+            @Override
+            public void onLoadMore() {
                 // 执行上拉加载数据的业务处理
                 presenter.loadMore();
             }
 
             // 是否正在加载中
             // 其内部将用此方法来判断是否触发onLoadMore
-            @Override public boolean isLoading() {
+            @Override
+            public boolean isLoading() {
                 return userlistview.getFooterViewsCount() > 0 && footerView.isLoading();
             }
 
             // 是否已加载完成所有数据
             // 其内部将用此方法来判断是否触发onLoadMore
-            @Override public boolean hasLoadedAllItems() {
+            @Override
+            public boolean hasLoadedAllItems() {
                 return userlistview.getFooterViewsCount() > 0 && footerView.isComplete();
             }
         }).start();
@@ -93,7 +104,8 @@ public class HotUserFragment extends Fragment implements UserListView {
         // 下拉刷新监听处理
         FrameLayout2.setPtrHandler(new PtrDefaultHandler() {
             // 当你"下拉时",将触发此方法
-            @Override public void onRefreshBegin(PtrFrameLayout frame) {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
                 // 去做数据的加载，做具体的业务
                 // 也就是说，你要抛开视图，到后台线程去做你的业务处理(数据刷新加载)
                 presenter.refresh();
@@ -119,14 +131,14 @@ public class HotUserFragment extends Fragment implements UserListView {
 
     @Override
     public void hideLoadMore() {
-   userlistview.removeFooterView(footerView);
+        userlistview.removeFooterView(footerView);
     }
 
     @Override
     public void showLoadMoreErro(String erroMsg) {
-   if (userlistview.getFooterViewsCount()==0){
-       userlistview.addFooterView(footerView);
-   }
+        if (userlistview.getFooterViewsCount() == 0) {
+            userlistview.addFooterView(footerView);
+        }
         footerView.showError(erroMsg);
     }
 
@@ -134,7 +146,6 @@ public class HotUserFragment extends Fragment implements UserListView {
     public void addMoreData(List<HotUser> datas) {
         ad.addAll(datas);
     }
-
 
 
     @Override

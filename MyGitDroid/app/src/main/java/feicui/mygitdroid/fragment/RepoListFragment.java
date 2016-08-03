@@ -3,29 +3,24 @@ package feicui.mygitdroid.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mugen.Mugen;
 import com.mugen.MugenCallbacks;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import feicui.mygitdroid.R;
 import feicui.mygitdroid.adapter.Language;
-import feicui.mygitdroid.adapter.ListviewAdapter;
 import feicui.mygitdroid.adapter.RepoListAdapter;
 import feicui.mygitdroid.commons.ActivityUtils;
-import feicui.mygitdroid.db.BaseFragment;
 import feicui.mygitdroid.entity.Repo;
 import feicui.mygitdroid.repoinfo.RepoInfoActivity;
 import feicui.mygitdroid.view.FooterView;
@@ -44,7 +39,6 @@ public class RepoListFragment extends Fragment implements RepoListView {
     View view;
     @Bind(R.id.lvRepos)
     ListView lvRepos;
-    //    ListviewAdapter ad;
     List<String> list;
     @Bind(R.id.ptrClassicFrameLayout)
     PtrClassicFrameLayout ptrClassicFrameLayout;
@@ -101,6 +95,15 @@ public class RepoListFragment extends Fragment implements RepoListView {
         initPullToRefresh();
         // 初始上拉加载更多
         initLoadMoreScroll();
+        if (adapter.getCount() == 0) {
+            ptrClassicFrameLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ptrClassicFrameLayout.autoRefresh();
+                }
+            }, 300);
+        }
+
     }
 
     private void initLoadMoreScroll() {

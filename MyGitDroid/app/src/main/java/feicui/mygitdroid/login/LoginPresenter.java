@@ -1,5 +1,7 @@
 package feicui.mygitdroid.login;
 
+import android.util.Log;
+
 import feicui.mygitdroid.commons.LogUtils;
 import feicui.mygitdroid.network.GitHubApi;
 import feicui.mygitdroid.network.GitHubClient;
@@ -24,10 +26,7 @@ public class LoginPresenter {
         loginView.showProgress();
         if (tokenCall != null) tokenCall.cancel();
 
-        tokenCall = GitHubClient.getInstance().getOAuthToken(
-                GitHubApi.CLIENT_ID,
-                GitHubApi.CLIENT_SECRET,
-                code);
+        tokenCall = GitHubClient.getInstance().getOAuthToken(GitHubApi.CLIENT_ID, GitHubApi.CLIENT_SECRET, code);
         tokenCall.enqueue(tokenCallback);
     }
 
@@ -56,9 +55,11 @@ public class LoginPresenter {
             UserRepo.setUser(user);
             loginView.showMessage("登陆成功");
             loginView.navigateToMain();
+            Log.i("msg1","走了吗");
         }
 
         @Override public void onFailure(Call<User> call, Throwable t) {
+            CurrentUser.clear();
             loginView.showMessage(t.getMessage());
             loginView.showProgress();
             loginView.resetWeb();

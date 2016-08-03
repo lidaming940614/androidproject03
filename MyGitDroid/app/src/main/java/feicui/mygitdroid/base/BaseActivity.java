@@ -1,4 +1,4 @@
-package feicui.mygitdroid.db;
+package feicui.mygitdroid.base;
 
 import android.app.Activity;
 import android.os.Bundle;

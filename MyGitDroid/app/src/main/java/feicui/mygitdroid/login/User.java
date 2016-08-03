@@ -13,11 +13,6 @@ public class User implements Serializable{
     private int id;
     @SerializedName("avatar_url")
     private String avatar;
-    private  String score;
-
-    public String getScore() {
-        return score;
-    }
 
     public String getLogin() {
         return login;
