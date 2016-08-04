@@ -21,6 +21,10 @@ import feicui.mygitdroid.R;
 import feicui.mygitdroid.adapter.Language;
 import feicui.mygitdroid.adapter.RepoListAdapter;
 import feicui.mygitdroid.commons.ActivityUtils;
+import feicui.mygitdroid.db.DBhelper;
+import feicui.mygitdroid.db.LocalRepo;
+import feicui.mygitdroid.db.LocalRepoDao;
+import feicui.mygitdroid.db.RepoChange;
 import feicui.mygitdroid.entity.Repo;
 import feicui.mygitdroid.repoinfo.RepoInfoActivity;
 import feicui.mygitdroid.view.FooterView;
@@ -52,16 +56,16 @@ public class RepoListFragment extends Fragment implements RepoListView {
 
     private static final String KEY_LANGUAGE = "key_language";
 
-    public static RepoListFragment getInstance(Language language){
+    public static RepoListFragment getInstance(Language language) {
         RepoListFragment fragment = new RepoListFragment();
         Bundle args = new Bundle();
-        args.putSerializable(KEY_LANGUAGE,language);
+        args.putSerializable(KEY_LANGUAGE, language);
         fragment.setArguments(args);
         return fragment;
     }
 
     private Language getLanguage() {
-        return (Language)getArguments().getSerializable(KEY_LANGUAGE);
+        return (Language) getArguments().getSerializable(KEY_LANGUAGE);
     }
 
     private RepoListAdapter adapter;
@@ -72,12 +76,15 @@ public class RepoListFragment extends Fragment implements RepoListView {
     private FooterView footerView; // 上拉加载更多的视图
     private ActivityUtils activityUtils;
 
-    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view=inflater.inflate(R.layout.fragment_hot_repo,container,false);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_hot_repo, container, false);
         return inflater.inflate(R.layout.fragment_repo_list, container, false);
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         activityUtils = new ActivityUtils(this);
@@ -86,14 +93,22 @@ public class RepoListFragment extends Fragment implements RepoListView {
         adapter = new RepoListAdapter();
         lvRepos.setAdapter(adapter);
         lvRepos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Repo repo = adapter.getItem(position);
-                RepoInfoActivity.open(getContext(),repo);
+                RepoInfoActivity.open(getContext(), repo);
             }
         });
-        // 初始下拉刷新
+        lvRepos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Repo repo = adapter.getItem(position);
+                LocalRepo localRepo = RepoChange.change(repo);
+                new LocalRepoDao(DBhelper.getInstance(getContext())).createOrUpdate(localRepo);
+                activityUtils.showToast("收藏成功");
+            }
+        });
         initPullToRefresh();
-        // 初始上拉加载更多
         initLoadMoreScroll();
         if (adapter.getCount() == 0) {
             ptrClassicFrameLayout.postDelayed(new Runnable() {
@@ -110,20 +125,23 @@ public class RepoListFragment extends Fragment implements RepoListView {
         footerView = new FooterView(getContext());
         Mugen.with(lvRepos, new MugenCallbacks() {
             // listview，滚动到底部,将触发此方法
-            @Override public void onLoadMore() {
+            @Override
+            public void onLoadMore() {
                 // 执行上拉加载数据的业务处理
                 presenter.loadMore();
             }
 
             // 是否正在加载中
             // 其内部将用此方法来判断是否触发onLoadMore
-            @Override public boolean isLoading() {
+            @Override
+            public boolean isLoading() {
                 return lvRepos.getFooterViewsCount() > 0 && footerView.isLoading();
             }
 
             // 是否已加载完成所有数据
             // 其内部将用此方法来判断是否触发onLoadMore
-            @Override public boolean hasLoadedAllItems() {
+            @Override
+            public boolean hasLoadedAllItems() {
                 return lvRepos.getFooterViewsCount() > 0 && footerView.isComplete();
             }
         }).start();
@@ -137,7 +155,8 @@ public class RepoListFragment extends Fragment implements RepoListView {
         // 下拉刷新监听处理
         ptrClassicFrameLayout.setPtrHandler(new PtrDefaultHandler() {
             // 当你"下拉时",将触发此方法
-            @Override public void onRefreshBegin(PtrFrameLayout frame) {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
                 // 去做数据的加载，做具体的业务
                 // 也就是说，你要抛开视图，到后台线程去做你的业务处理(数据刷新加载)
                 presenter.refresh();
@@ -192,25 +211,29 @@ public class RepoListFragment extends Fragment implements RepoListView {
     }
 
     // 上拉加载更多视图实现----------------------------------------
-    @Override public void showLoadMoreLoading() {
+    @Override
+    public void showLoadMoreLoading() {
         if (lvRepos.getFooterViewsCount() == 0) {
             lvRepos.addFooterView(footerView);
         }
         footerView.showLoading();
     }
 
-    @Override public void hideLoadMore() {
+    @Override
+    public void hideLoadMore() {
         lvRepos.removeFooterView(footerView);
     }
 
-    @Override public void showLoadMoreErro(String erroMsg) {
+    @Override
+    public void showLoadMoreErro(String erroMsg) {
         if (lvRepos.getFooterViewsCount() == 0) {
             lvRepos.addFooterView(footerView);
         }
         footerView.showError(erroMsg);
     }
 
-    @Override public void addMoreData(List<Repo> datas) {
+    @Override
+    public void addMoreData(List<Repo> datas) {
         adapter.addAll(datas);
     }
 }

@@ -9,18 +9,20 @@ import java.util.List;
  * Created by 1099057173 on 2016/8/3.
  */
 public class LocalRepoDao {
+    private Dao<LocalRepo, Long> dao;
 
-    private final Dao<RepoGroupTable, Long> dao;
-
-    public LocalRepoDao(DBhelper dbHelper){
+    public LocalRepoDao(DBhelper dbHelp) {
         try {
-            dao = dbHelper.getDao(RepoGroupTable.class);
+            dao = dbHelp.getDao(LocalRepo.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void createOrUpdate(RepoGroupTable localRepo){
+    /***
+     * 添加或更新本地仓库数据
+     */
+    public void createOrUpdate(LocalRepo localRepo) {
         try {
             dao.createOrUpdate(localRepo);
         } catch (SQLException e) {
@@ -28,34 +30,55 @@ public class LocalRepoDao {
         }
     }
 
-    public void createOrUpdateAll(List<RepoGroupTable> localRepos){
-        for (RepoGroupTable localRepo : localRepos) {
+    /***
+     * 添加或更新本地仓库数据
+     */
+    public void createOrUpdate(List<LocalRepo> localRepos) {
+        for (LocalRepo localRepo : localRepos) {
             createOrUpdate(localRepo);
         }
     }
 
-    public List<RepoGroupTable> queryForAll(){
-        try {
-            return dao.queryForAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public RepoGroupTable queryForId(long id) {
-        try {
-            return dao.queryForId(id);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    public void delete(RepoGroupTable localRepo){
+    /**
+     * 删除本地仓库数据
+     */
+    public void delete(LocalRepo localRepo) {
         try {
             dao.delete(localRepo);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 查询本地仓库(图像处理的，架构的...,能查到全部或未分类的)
+     */
+    public List<LocalRepo> queryForGroupId(int groupId) {
+        try {
+            return dao.queryForEq(LocalRepo.COLUMN_GROUP_ID, groupId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 未分类的
+     */
+    public List<LocalRepo> queryForNoGroup() {
+        try {
+            return dao.queryBuilder().where().isNull(LocalRepo.COLUMN_GROUP_ID).query();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<LocalRepo> queryForAll() {
+
+        try {
+
+            return dao.queryForAll();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+    }
     }
 }

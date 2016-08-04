@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView.OnNavigationItemSelectedListener listener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
+            if (item.isChecked()) {
+                item.setChecked(false);
+            }
             switch (item.getItemId()) {
                 case R.id.github_hot_repo:
                     if (fragment_hot_repo == null) {
@@ -100,17 +103,14 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     }
-                    drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.github_hot_coder:
                     if (hotUserFragment == null) {
                         hotUserFragment = new HotUserFragment();
                         if (!hotUserFragment.isAdded()) {
                             replaceFragment(hotUserFragment);
-
                         }
                     }
-                    drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case  R.id.arsenal_my_repo:
                     if(favoriteFragment == null)favoriteFragment = new FavoriteFragment();
@@ -119,7 +119,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
             }
-            drawerLayout.closeDrawer(GravityCompat.START);
+            drawerLayout.post(new Runnable() {
+                @Override public void run() {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
+            });
             return true;
         }
     };

@@ -30,7 +30,6 @@ public class GitDroidApplication extends Application {
                 .memoryCacheSize(5 * 1024 * 1024)
                 .defaultDisplayImageOptions(options)
                 .build();
-
         ImageLoader.getInstance().init(config);
     }
 }

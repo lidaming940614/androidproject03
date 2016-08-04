@@ -35,7 +35,9 @@ private  static  final  String TABNE_NAME="repo_favorites.db";
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
             TableUtils.createTableIfNotExists(connectionSource,RepoGroupTable.class);
-            new LocalRepoDao(this).createOrUpdateAll(RepoGroupTable.getdafaltGroups(context));
+            TableUtils.createTableIfNotExists(connectionSource, LocalRepo.class);
+            new RepoDao(this).createOrUpdateAll(RepoGroupTable.getdafaltGroups(context));
+            new LocalRepoDao(this).createOrUpdate(LocalRepo.getDefaultLocalRepos(context));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -46,6 +48,7 @@ private  static  final  String TABNE_NAME="repo_favorites.db";
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
             TableUtils.dropTable(connectionSource,RepoGroupTable.class, true);
+            TableUtils.dropTable(connectionSource,LocalRepo.class, true);
             onCreate(database,connectionSource);
         } catch (SQLException e) {
             throw new RuntimeException(e);
