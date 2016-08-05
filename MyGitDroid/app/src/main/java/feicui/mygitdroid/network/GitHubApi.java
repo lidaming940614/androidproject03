@@ -24,7 +24,6 @@ public interface GitHubApi {
     String CALL_BACK = "lidaming";
     String CLIENT_ID = "9625ad4e530bdda2dc88";
     String CLIENT_SECRET = "0b9cc81f748995367577c7681b4c274efde828f2";
-
     String AUTH_SCOPE = "user,public_repo,repo";
     // 授权登陆页面(用WebView来加载)
     String AUTH_RUL = "https://github.com/login/oauth/authorize?client_id=" + CLIENT_ID + "&scope=" + AUTH_SCOPE;
@@ -60,8 +59,6 @@ public interface GitHubApi {
     })
     @POST("/markdown/raw")
     Call<ResponseBody> markDown(@Body RequestBody body);
-
-
 
 
     @GET("/search/users")

@@ -23,7 +23,6 @@ public class GitHubClient implements GitHubApi {
     private GitHubApi gitHubApi;
 
     private static GitHubClient gitHubClient;
-
     public static GitHubClient getInstance() {
         if (gitHubClient == null) {
             gitHubClient = new GitHubClient();
